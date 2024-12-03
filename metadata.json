@@ -1,0 +1,9 @@
+{
+  "name": "Mic Indicator Visibility Manager",
+  "description": "Hides the annoying orange mic icon based on some filters.",
+  "uuid": "mic-indicator-visibility-manager@alhaddar.dev",
+  "shell-version": [
+    "46"
+  ],
+  "version": "1"
+}

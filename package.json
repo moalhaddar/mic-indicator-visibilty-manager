@@ -1,0 +1,27 @@
+{
+  "name": "mic-indicator-visibilty-manager",
+  "version": "0.0.0",
+  "description": "A GNOME Extension to manage the mic indicator in gnome panel",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moalhaddar/mic-indicator-visibilty-manager.git"
+  },
+  "author": "Álan Crístoffer e Sousa <acristoffers@startmail.com>",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/moalhaddar/mic-indicator-visibilty-manager/issues"
+  },
+  "homepage": "https://github.com/moalhaddar/mic-indicator-visibilty-manager#readme",
+  "sideEffects": false,
+  "devDependencies": {
+    "eslint": "^9.16.0",
+    "eslint-plugin-jsdoc": "^50.6.0",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@girs/gjs": "^4.0.0-beta.19",
+    "@girs/gnome-shell": "^47.0.0"
+  }
+}
