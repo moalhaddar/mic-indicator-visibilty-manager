@@ -80,11 +80,22 @@ function getSourceOutputsFromCLI() {
 
 
 export default class MicIndicatorVisibilityManagerExtension extends Extension {
-
+    settings;
     input;
     originalMaybeShowInput;
 
+    constructor(metadata) {
+        super(metadata);
+        this.settings = this.getSettings();
+        this.settings.connect('changed::show-virtual-sources', 
+            () => this.input._maybeShowInput())
+
+        this.settings.connect('changed::skipped-apps', 
+            () => this.input._maybeShowInput())
+    }
+
     enable() {
+        const extensionSettings = this.settings;
         this.input = Main.panel.statusArea.quickSettings._volumeInput._input;
 
         this.originalMaybeShowInput = this.input._maybeShowInput
@@ -92,15 +103,16 @@ export default class MicIndicatorVisibilityManagerExtension extends Extension {
         this.input._maybeShowInput = (function() {
             let showInput = false;
             if (this._stream) {
-                const skippedApps = [
-                    'org.gnome.VolumeControl',
-                    'org.PulseAudio.pavucontrol',
-                ];
-
                 const sourceOutputs = getSourceOutputsFromCLI()
                 const sourceOutputsFiltered = sourceOutputs
-                    .filter(output => output.properties['node.virtual'] !== 'true')
-                    .filter(output => !skippedApps.includes(output.properties['application.id']))
+                .filter(output => {
+                    if (!extensionSettings.get_boolean('show-virtual-sources')) {
+                        return output.properties['node.virtual'] !== 'true';
+                    }
+                    return true;
+                })
+                .filter(output => !extensionSettings.get_strv('skipped-apps')
+                    .includes(output.properties['application.id']));
 
                 showInput = sourceOutputsFiltered.length > 0;
             }
@@ -115,7 +127,6 @@ export default class MicIndicatorVisibilityManagerExtension extends Extension {
     }
 
     disable() {
-
         this.input._maybeShowInput = this.originalMaybeShowInput;
         this.input._maybeShowInput();
 

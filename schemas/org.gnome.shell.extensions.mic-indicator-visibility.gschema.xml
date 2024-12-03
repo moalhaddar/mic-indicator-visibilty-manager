@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.mic-indicator-visibility" path="/org/gnome/shell/extensions/mic-indicator-visibility/">
+    <key name="skipped-apps" type="as">
+      <default>['org.gnome.VolumeControl', 'org.PulseAudio.pavucontrol']</default>
+      <summary>Skipped Applications</summary>
+      <description>List of applications to skip when checking for mic usage</description>
+    </key>
+    <key name="show-virtual-sources" type="b">
+      <default>false</default>
+      <summary>Show Virtual Sources</summary>
+      <description>Whether to show the indicator for virtual sources</description>
+    </key>
+  </schema>
+</schemalist>

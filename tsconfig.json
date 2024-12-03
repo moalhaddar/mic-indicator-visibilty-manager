@@ -15,5 +15,6 @@
   ],
   "files": [
     "extension.js",
+    "prefs.js"
   ],
 }
