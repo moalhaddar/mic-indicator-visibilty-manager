@@ -47,6 +47,39 @@ export default class MicIndicatorPreferences extends ExtensionPreferences {
             settings.set_strv('skipped-apps', apps);
         });
 
+        const ignoredPropsGroup = new Adw.PreferencesGroup({
+            title: 'Ignored Properties',
+            description: 'Enter property:value pairs to ignore (one per line)\nExample: node.name:MyMic',
+        });
+        page.add(ignoredPropsGroup);
+
+        const scrolledWindow = new Gtk.ScrolledWindow({
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+            min_content_height: 100,
+            max_content_height: 200,
+        });
+
+        const textView = new Gtk.TextView({
+            wrap_mode: Gtk.WrapMode.WORD_CHAR,
+            monospace: true,
+        });
+        
+        const buffer = textView.get_buffer();
+        buffer.set_text(settings.get_strv('ignored-properties').join('\n'), -1);
+        
+        scrolledWindow.set_child(textView);
+        ignoredPropsGroup.add(scrolledWindow);
+
+        buffer.connect('changed', () => {
+            const [start, end] = buffer.get_bounds();
+            const text = buffer.get_text(start, end, false);
+            const properties = text.split('\n')
+                .map(line => line.trim())
+                .filter(line => line && line.includes(':'));
+            settings.set_strv('ignored-properties', properties);
+        });
+
         window.add(page);
     }
 }

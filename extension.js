@@ -87,11 +87,9 @@ export default class MicIndicatorVisibilityManagerExtension extends Extension {
     constructor(metadata) {
         super(metadata);
         this.settings = this.getSettings();
-        this.settings.connect('changed::show-virtual-sources', 
-            () => this.input._maybeShowInput())
-
-        this.settings.connect('changed::skipped-apps', 
-            () => this.input._maybeShowInput())
+        this.settings.connect('changed::show-virtual-sources', () => this.input._maybeShowInput())
+        this.settings.connect('changed::skipped-apps', () => this.input._maybeShowInput())
+        this.settings.connect('changed::ignored-properties', () => this.input._maybeShowInput())
     }
 
     enable() {
@@ -105,14 +103,31 @@ export default class MicIndicatorVisibilityManagerExtension extends Extension {
             if (this._stream) {
                 const sourceOutputs = getSourceOutputsFromCLI()
                 const sourceOutputsFiltered = sourceOutputs
-                .filter(output => {
-                    if (!extensionSettings.get_boolean('show-virtual-sources')) {
-                        return output.properties['node.virtual'] !== 'true';
-                    }
-                    return true;
-                })
-                .filter(output => !extensionSettings.get_strv('skipped-apps')
-                    .includes(output.properties['application.id']));
+                    .filter(output => {
+                        // Check virtual sources setting
+                        if (!extensionSettings.get_boolean('show-virtual-sources')) {
+                            if (output.properties['node.virtual'] === 'true') {
+                                return false;
+                            }
+                        }
+
+                        // Check skipped apps
+                        if (extensionSettings.get_strv('skipped-apps')
+                            .includes(output.properties['application.id'])) {
+                            return false;
+                        }
+
+                        // Check ignored properties
+                        const ignoredProps = extensionSettings.get_strv('ignored-properties');
+                        for (const prop of ignoredProps) {
+                            const [key, value] = prop.split(':');
+                            if (output.properties[key] === value) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    });
 
                 showInput = sourceOutputsFiltered.length > 0;
             }

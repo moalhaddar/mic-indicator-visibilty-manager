@@ -11,5 +11,10 @@
       <summary>Show Virtual Sources</summary>
       <description>Whether to show the indicator for virtual sources</description>
     </key>
+    <key name="ignored-properties" type="as">
+      <default>[]</default>
+      <summary>Ignored Properties</summary>
+      <description>List of property:value pairs to ignore (e.g. "node.name:MyMic")</description>
+    </key>
   </schema>
 </schemalist>
